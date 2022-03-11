@@ -16,7 +16,8 @@ cp index.nginx-debian.html /var/www/html/index.nginx-debian.html
 
 ## Nginx config
 sed 's/api_dltx_io/test.domain.com/g' nginx/default-api-only
-sudo cp nginx/default-api-only /etc/nginx/sites-available/default
+# sudo cp nginx/default-api-only /etc/nginx/sites-available/default
+sudo sed -i 's/api_dltx_io/$1/g' nginx/default-api-only > /etc/nginx/sites-available/default
 
 sed 's/word1/word2/g' input.file
 

@@ -10,14 +10,14 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 sudo apt update && sudo apt install yarn
 
 sudo apt install nginx
-cp index.nginx-debian.html /var/www/html/index.nginx-debian.html
-cp /nginx/default-api-only /etc/nginx/sites-available/default
 sudo systemctl restart nginx
+
+cp index.nginx-debian.html /var/www/html/index.nginx-debian.html
 
 sudo ufw allow 22
 sudo ufw allow 'Nginx HTTP'
 sudo ufw allow 'Nginx HTTPS'
 
-sudo npm install pm2@latest -g
+# sudo npm install pm2@latest -g
 
 sudo ufw enable

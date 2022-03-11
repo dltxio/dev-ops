@@ -8,7 +8,7 @@ server {
 
         root /var/www/html;
 
-        server_name _;
+        server_name api_dltx_io;
 
         location / {
                 # First attempt to serve request as file, then

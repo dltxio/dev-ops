@@ -26,8 +26,7 @@ jobs:
             yarn
             cd client
             yarn build
-            yarn copy-yarn-files-to-javascript
             rm -r /var/www/html
             mv ~/ProjectName/packages/web-app/build /var/www/html
-            pm2 delete all
+            pm2 delete ProjectName
             pm2 start "yarn start" --name "ProjectName"

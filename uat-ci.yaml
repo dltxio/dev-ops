@@ -1,4 +1,4 @@
-name: uat
+name: uat-ci
 
 on:
   push:

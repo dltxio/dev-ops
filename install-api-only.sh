@@ -7,18 +7,18 @@ sudo apt install nodejs
 rm nodesource_setup.sh
 
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-sudo apt update && sudo apt install yarn
+sudo apt-get update && sudo apt-get install yarn
 
 sudo apt install nginx
 sudo systemctl restart nginx
 
-cp index.nginx-debian.html /var/www/html/index.nginx-debian.html
+cp ~/dev-ops/index.nginx-debian.html /var/www/html/index.nginx-debian.html
 
 ## Nginx config
 sed 's/api_dltx_io/test.domain.com/g' nginx/default-api-only
 # sudo cp nginx/default-api-only /etc/nginx/sites-available/default
 sed -i 's/api_dltx_io/'$1'/g' nginx/default-api-only
-sudo cp nginx/default-api-only /etc/nginx/sites-available/default
+sudo cp ~/dev-ops/nginx/default-api-only /etc/nginx/sites-available/default
 sudo systemctl reload nginx
 
 sudo ufw allow 22

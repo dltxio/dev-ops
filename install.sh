@@ -7,7 +7,7 @@ sudo apt install nodejs
 rm nodesource_setup.sh
 
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-sudo apt update && sudo apt install yarn
+sudo apt-get update && sudo apt-get install yarn
 
 sudo apt install nginx
 sudo systemctl restart nginx

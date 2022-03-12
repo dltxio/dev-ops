@@ -12,7 +12,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - name: Deploy FrontEnd Client
+      - name: Deploy FrontEnd Client to UAT
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DO_DEPLOY_IP }}

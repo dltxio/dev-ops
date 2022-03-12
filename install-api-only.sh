@@ -17,7 +17,7 @@ cp ~/dev-ops/index.nginx-debian.html /var/www/html/index.nginx-debian.html
 ## Nginx config
 sed 's/api_dltx_io/test.domain.com/g' nginx/default-api-only
 # sudo cp nginx/default-api-only /etc/nginx/sites-available/default
-sed -i 's/api_dltx_io/'$1'/g' nginx/default-api-only
+sed -i 's/api_dltx_io/'$1'/g' ~/dev-ops/nginx/default-api-only
 sudo cp ~/dev-ops/nginx/default-api-only /etc/nginx/sites-available/default
 sudo systemctl reload nginx
 

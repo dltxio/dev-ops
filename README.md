@@ -8,7 +8,7 @@ Install Ngninx and GH actions
 
 ## Deploy bot SSH PubKey
 
-GitHub secrets add the following key pairs.  SSH private key can be found in bitwarden.
+GitHub secrets add the following key pairs.  SSH private key can be found in bitwarden as "Digital Ocean Deploy Bot Private Key".
 
 * DO_HOST
 * DO_USERNAME

@@ -12,7 +12,7 @@ sudo apt-get update && sudo apt-get install yarn
 sudo apt install nginx
 sudo systemctl restart nginx
 
-cp index.nginx-debian.html /var/www/html/index.nginx-debian.html
+cp ~/dev-ops/index.nginx-debian.html /var/www/html/index.nginx-debian.html
 
 sudo ufw allow 22
 sudo ufw allow 'Nginx HTTP'

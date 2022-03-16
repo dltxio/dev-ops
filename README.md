@@ -19,7 +19,7 @@ ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuGtCRzteoXPCbmG9cQWN+9PZqj5VQsV3JQSwX2I4L
 ```
 ## GitHub Actions
 ### [uat-ci](./uat-ci.yaml)
-Deploys the `develop` branch to Digital Ocean, checks out the code, runs a build, copies some files and starts the server with pm2
+Deploys the `develop` branch to Digital Ocean, checks out the code, runs a build, copies some files and starts the server with [pm2](https://pm2.keymetrics.io/)
 
 Prerequisites:
 - The repository secrets mentioned above so that the GH action can SSH into the DO server

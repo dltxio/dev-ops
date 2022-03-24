@@ -25,7 +25,7 @@ jobs:
             yarn install
             # optional environment variable secret substitution
             cp .env.development .env
-            # one line per secret
+            # one line per secret, the forward slashes are a delimiter and can be replaced by any char
             sed -i -e 's/ENV_VAR_1_TOKEN/${{ secrets.ENV_VAR_1 }}/g' .env
             sed -i -e 's/ENV_VAR_2_TOKEN/${{ secrets.ENV_VAR_2 }}/g' .env
             yarn build

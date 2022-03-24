@@ -1,15 +1,14 @@
 # dev-ops
 Install Ngninx and GH actions
 
-## Install Ngninx and frameworks
-
+## Install Ngninx and frameworks on your Digital Ocean droplet
 1. Install the Digital Ocean Deploy Bot Private Key into your `~/.ssh` directory on your computer (found in BitWarden)
 2. SSH onto the VM
 3. `git clone https://github.com/dltxio/dev-ops.git && cd dev-ops && ./install.sh`
 
-## Deploy Bot SSH
+## Deploy Bot SSH to your GitHub repository
 Allows GitHub actions in the CI yaml files to SSH onto your Digital Ocean server/droplet\
-In your GitHub repository Settings > Secrets and add the following key pairs:
+In your GitHub repository Settings > Secrets add the following key pairs:
 * `DO_DEPLOY_HOST`: The IP or DNS of the VM  
 * `DO_DEPLOY_USERNAME`: The user name on the VM that will be used in the SSH tunnel (typically `root`)
 * `DO_DEPLOY_KEY`: The Digital Ocean Deploy Bot Private Key
@@ -29,4 +28,4 @@ Prerequisites:
 Deploys the `development` branch to Digital Ocean, checks out the code, runs a build, copies some files and starts the server with [pm2](https://pm2.keymetrics.io/)
 
 ### [uat-ci-docker](./uat-ci-docker.yaml)
-Deploys the `development` branch to Digial Ocean, checks out the code, runs a build, creates the [Docker](https://www.docker.com/) image as per the [Dockerfile](./Dockerfile) and starts the container
+Deploys the `development` branch to Digital Ocean, checks out the code, runs a build, creates the [Docker](https://www.docker.com/) image as per the [Dockerfile](./Dockerfile) and starts the container

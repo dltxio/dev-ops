@@ -1,0 +1,35 @@
+name: uat-ci
+
+on:
+  push:
+    branches: [development]
+
+jobs:
+  deploy:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Build and deploy Docket to UAT
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DO_DEPLOY_HOST }}
+          username: ${{ secrets.DO_DEPLOY_USERNAME }}
+          key: ${{ secrets.DO_DEPLOY_KEY }}
+          script: |
+            cd ~/ProjectName
+            git checkout development
+            git pull
+            yarn install
+            # optional environment variable secret substitution
+            cp .env.development .env
+            # one line per secret
+            sed -i -e 's/ENV_VAR_1_TOKEN/${{ secrets.ENV_VAR_1 }}/g' .env
+            sed -i -e 's/ENV_VAR_2_TOKEN/${{ secrets.ENV_VAR_2 }}/g' .env
+            yarn build
+            docker stop projectnamecontainer 
+            docker rm projectnamecontainer
+            docker build . --tag projectnameimage  
+            docker run -i -p 3000:3000 --name projectnamecontainer projectnameimage

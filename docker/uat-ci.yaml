@@ -32,4 +32,4 @@ jobs:
             docker stop projectnamecontainer 
             docker rm projectnamecontainer
             docker build . --tag projectnameimage  
-            docker run -i -p 3000:3000 --name projectnamecontainer projectnameimage
+            docker run -i -p 127.0.0.1:3000:3000 --name projectnamecontainer projectnameimage

@@ -5,6 +5,7 @@ Install Ngninx and GH actions
 1. Install the Digital Ocean Deploy Bot Private Key into your `~/.ssh` directory on your computer (found in BitWarden)
 2. SSH onto the VM
 3. `git clone https://github.com/dltxio/dev-ops.git && cd dev-ops && ./install.sh`
+4. Depending on pm2 or docker preference run `./pm2/install.sh` or `./docker/install.sh` respectively
 
 ## Deploy Bot SSH to your GitHub repository
 Allows GitHub actions in the CI yaml files to SSH onto your Digital Ocean server/droplet\
@@ -24,8 +25,8 @@ Prerequisites:
 - The target DO server must have the the Deploy Bot private key listed in `/root/.ssh/authorized_keys` (this should already be the case if a custom DLTx base-image was used to create the DO server). This is so that the server has git credentials required by `appleboy/ssh-action`
 - The DO Deploy Bot public key be added to the repo as a Deploy Key. This is so that GH accepts the credentials of the DO server as it performs git commands
 
-### [uat-ci](./uat-ci.yaml)
+### PM2 [uat-ci](./pm2/uat-ci.yaml)
 Deploys the `development` branch to Digital Ocean, checks out the code, runs a build, copies some files and starts the server with [pm2](https://pm2.keymetrics.io/)
 
-### [uat-ci-docker](./uat-ci-docker.yaml)
+### Docker [uat-ci](./docker/uat-ci.yaml)
 Deploys the `development` branch to Digital Ocean, checks out the code, runs a build, creates the [Docker](https://www.docker.com/) image as per the [Dockerfile](./Dockerfile) and starts the container

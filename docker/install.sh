@@ -19,7 +19,7 @@ cp ~/dev-ops/ufw/after.rules /etc/ufw/after.rules
 
 # Firewall rules
 sudo ufw allow 22
-sudo ufw allow from 103.1.229.2 to any port 443
+sudo ufw allow 443
 
 sudo apt-get update
 

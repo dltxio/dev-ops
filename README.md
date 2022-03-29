@@ -5,7 +5,7 @@ Install Ngninx and GH actions
 1. Install the Digital Ocean Deploy Bot Private Key into your `~/.ssh` directory on your computer (found in BitWarden)
 2. SSH onto the VM e.g. `ssh root@1.2.3.4`
 
-## Install Ngninx and frameworks on the droplet
+## Install Nginx and frameworks on the droplet
 1. SSH onto the VM as per above
 2. `git clone https://github.com/dltxio/dev-ops.git && cd dev-ops && ./install.sh`
 3. Depending on pm2 or docker preference run `./pm2/install.sh` or `./docker/install.sh` respectively

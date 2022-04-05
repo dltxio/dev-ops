@@ -1,0 +1,16 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+name: react-template
+region: sgp
+static_sites:
+- build_command: yarn build
+  environment_slug: node-js
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: dltxio/react-template
+  name: react-template
+  routes:
+  - path: /
+  source_dir: /

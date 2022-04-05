@@ -10,10 +10,10 @@ Extra info [here](https://docs.digitalocean.com/products/app-platform/languages-
 1. Create the app on DO [here](https://cloud.digitalocean.com/apps/) and connect it up using GitHub (requires SSO between your GH and DO accounts)
 2. Follow the wizard leaving all the defaults for now - this will produce a failed build. Don't worry
 3. Go to the Settings page on your app and scroll down to see the yaml config. 
-4. Augment `.do/nestjs-template.yaml` or TODO FE-yaml with your project specifics and upload it to replace the default on the Settings page
+4. Augment `.do/nestjs-template.yaml` or `.do/react-template.yaml` or `.do/fullstack-template.yaml` with your project specifics and upload it to replace the default on the Settings page
 5. Your build should now re-run and (hopefully) complete successfully.
-6. Commit your working yaml to your GitHub repo
-7. Optional - you can change the deployed domain on the Settings page
+6. Commit your working yaml to your GitHub repo (in the event the project needs to be redeployed from scratch)
+7. Optional - you can change the deployed domain and other things on the Settings page
 
 ## Option 2 - Digital Ocean Droplets
 Manually deploy a server, install Ngninx and then use GH actions to deploy your app

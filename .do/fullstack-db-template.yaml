@@ -1,0 +1,58 @@
+databases:
+- cluster_name: db-postgresql-sgp1-16621
+  db_name: fullstack-db-template-name
+  db_user: fullstack-db-template-user
+  engine: PG
+  name: db-postgresql-sgp1-16621
+  production: true
+  version: "12"
+name: fullstack-db-template
+region: sgp
+services:
+- build_command: yarn build
+  environment_slug: node-js
+  envs:
+  - key: DATABASE_URL
+    scope: RUN_TIME
+    value: ${db-postgresql-sgp1-16621.DATABASE_URL}
+  - key: POSTGRES_HOST
+    scope: RUN_AND_BUILD_TIME
+    value: ${db-postgresql-sgp1-16621.HOSTNAME}
+  - key: POSTGRES_DB_NAME
+    scope: RUN_AND_BUILD_TIME
+    value: ${db-postgresql-sgp1-16621.DATABASE}
+  - key: POSTGRES_PORT
+    scope: RUN_AND_BUILD_TIME
+    value: ${db-postgresql-sgp1-16621.PORT}
+  - key: POSTGRES_USER
+    scope: RUN_AND_BUILD_TIME
+    value: ${db-postgresql-sgp1-16621.USERNAME}
+  - key: POSTGRES_PASSWORD
+    scope: RUN_AND_BUILD_TIME
+    value: ${db-postgresql-sgp1-16621.PASSWORD}
+  - key: CA_CERT
+    scope: RUN_AND_BUILD_TIME
+    value: ${db-postgresql-sgp1-16621.CA_CERT}
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: dltxio/fullstack-db-template
+  http_port: 3000
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: fullstack-db-template-api
+  routes:
+  - path: /api
+  run_command: yarn start
+  source_dir: /api
+static_sites:
+- environment_slug: node-js
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: dltxio/fullstack-db-template
+  name: fullstack-db-template-client
+  output_dir: /
+  routes:
+  - path: /
+  source_dir: /client

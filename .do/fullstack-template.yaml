@@ -12,7 +12,7 @@ services:
     repo: dltxio/fullstack-template
   http_port: 3000
   instance_count: 1
-  instance_size_slug: basic-xs
+  instance_size_slug: basic-xxs
   name: fullstack-template-api
   routes:
   - path: /api

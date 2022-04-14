@@ -1,0 +1,20 @@
+alerts:
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+name: nestjs-template
+region: sgp
+services:
+- build_command: yarn build
+  environment_slug: node-js
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: dltxio/nestjs-template
+  http_port: 3000
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: nestjs-template
+  routes:
+  - path: /
+  run_command: yarn start:prod
+  source_dir: /

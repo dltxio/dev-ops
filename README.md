@@ -9,12 +9,12 @@ Extra info [here](https://docs.digitalocean.com/products/app-platform/languages-
 ### Instructions
 1. Create the app on DO [here](https://cloud.digitalocean.com/apps/) and connect it up using GitHub (requires SSO between your GH and DO accounts)
 2. Follow the wizard leaving all the defaults for now - this will produce a failed build. Don't worry
-3. Go to the Settings page on your app and scroll down to see the yaml config on the screen. 
+3. Go to the Settings page on your app and scroll down to see "App Spec" and click "Edit" to get the yaml config on the screen. 
 4. Click the download button to get a copy of the config, open it in a text editor, and apply appropriate changes from one of the example files below based on your app requirements
   * Back-end only: `.do/nestjs-template.yaml`, 
   * Front-end only: `.do/react-template.yaml`, 
   * Full-stack: `.do/fullstack-template.yaml` or 
-  * Full-stack + PostGresDB: `.do/fullstack-template.yaml` 
+  * Full-stack + PostGresDB: `.do/fullstack-db-template.yaml` 
 5. Re-upload the changed file, which will kick-off a re-build and deploy of you app (hopefully with success)
 6. Optional - you can change the deployed domain and other things on the Settings page
 7. Commit your final working yaml to your GitHub repo in a `.do/`folder (in the event the project needs to be redeployed from scratch)

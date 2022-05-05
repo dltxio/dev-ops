@@ -16,6 +16,6 @@ jobs:
           fetch-depth: 0
       - uses: pixta-dev/repository-mirroring-action@v1
         with:
-          target_repo_url: git@github.com:CLIENT_REPO/PROJECT.git # <-- need to change client's repo url
+          target_repo_url: ${{ secrets.CLIENT_REPO_GIT_URL }}
           ssh_private_key: # <-- use 'secrets' to pass credential information.
             ${{ secrets.CLIENT_REPO_PRIVATE_KEY }}

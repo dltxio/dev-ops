@@ -10,7 +10,7 @@ on:
 jobs:
   to_client_repo:
     runs-on: ubuntu-latest
-    steps: # <-- must use actions/checkout before mirroring!
+    steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0

@@ -6,7 +6,7 @@ on:
       - development
 
 jobs:
-  to_ritestream:
+  to_client_repo:
     runs-on: ubuntu-latest
     steps: # <-- must use actions/checkout before mirroring!
       - uses: actions/checkout@v2

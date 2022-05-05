@@ -3,6 +3,8 @@ name: Mirror-to-client-repo
 on:
   push:
     branches:
+      - main
+      - master
       - development
 
 jobs:

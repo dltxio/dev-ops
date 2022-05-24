@@ -19,6 +19,16 @@ Extra info [here](https://docs.digitalocean.com/products/app-platform/languages-
 6. Optional - you can change the deployed domain and other things on the Settings page
 7. Commit your final working yaml to your GitHub repo in a `.do/`folder (in the event the project needs to be redeployed from scratch)
 
+### (Optional) If you require DM migrations for your app
+1. Install pgAdmin4 https://www.pgadmin.org/
+2. Once pgAdmin is running, select "Add new server"
+3. Add the server details found in the DLTX Digital Ocean account (https://cloud.digitalocean.com/databases/db-postgresql-sgp1-16621?i=7cba59)
+4. Once connected select the DB you wish to run migration scripts on
+5. Then from the top menu bar click "Tools" and "Query Tool"
+6. Then it reload the page. Above the menubar on the left, you see the folder-icon (look picture below). Click on them and choose your .sql file
+7. Click on select and the file is uploaded
+8. To execute the .sql file, press F5 or the play button above the menubar in the middle
+9. Right click on your database and click on 'Refresh'
 
 ## Option 2 - Digital Ocean Droplets
 Manually deploy a server, install Ngninx and then use GH actions to deploy your app

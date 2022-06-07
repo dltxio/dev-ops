@@ -30,6 +30,14 @@ Extra info [here](https://docs.digitalocean.com/products/app-platform/languages-
 8. To execute the .sql file, press F5 or the play button above the menubar in the middle
 9. Right click on your database and click on 'Refresh'
 
+### (Optional) If the domain the app is hosted on is not on DO
+1. In the settings section of the app select “edit” on “Domains” and then “+ Add Domain”
+2. On the new page enter your Domain or Subdomain Name
+3. Then select “You manage domain”
+4. Copy the CNAME Alias shown and create a CNAME record on the platform the DNS is hosted on, with the name being where you want to direct to (eg “app.product.io”) and the content as the CNAME Alias copied previously.
+5. Once the CNAME record is set up head back over to the DO app where you should still be on the “Add Domain” page and select “Add Domain”
+6. Now when you select “edit” on “Domains” you will see the new domain as either “pending” (this can take around 10 mins) or active
+
 ## Option 2 - Digital Ocean Droplets
 Manually deploy a server, install Ngninx and then use GH actions to deploy your app
 

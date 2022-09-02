@@ -1,0 +1,102 @@
+name: project-name
+
+pod:
+  annotations: {}
+  securityContext: {
+    fsGroup: 20001
+  }
+  replicas: 1
+  imagePullSecrets: []
+  nodeSelector: {}
+  tolerations: []
+  affinity: {} 
+
+container:
+  securityContext: {
+    readOnlyRootFilesystem: true,
+    runAsNonRoot: true,
+    runAsUser: 10001,
+    allowPrivilegeEscalation: false
+  }
+  port: 3000
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  image:
+    # repository value replaced in pipeline
+    repository: ""
+    pullPolicy: IfNotPresent
+    # tag value replaced in pipeline
+    tag: ""
+  envFrom:
+    enabled: true
+    config:
+      - name: core-service-order-configmap
+        type: configmap
+      - name: order-config
+        type: secret
+  volumeMount:
+    enabled: false
+    config:
+      - volumeName: core-workflow-gateway-client-tls
+        path: /app/cert/workflow/ca.crt
+        subPath: ca.crt
+      - volumeName: core-workflow-gateway-client-tls
+        path: /app/cert/workflow/tls.crt
+        subPath: tls.crt
+      - volumeName: core-workflow-gateway-client-tls
+        path: /app/cert/workflow/tls.key
+        subPath: tls.key
+  volume:
+    enabled: false
+    config:
+      - name: core-workflow-gateway-client-tls
+        type: secret
+        defaultMode: 420
+  livenessProbe:
+    enabled: false
+  readinessProbe:
+    enabled: false
+    
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 3000 
+
+serviceAccount:
+  create: create
+  name: "core-service-order-sa"
+  # annotations: {
+    # iam.gke.io/gcp-service-account: "core-service-order-sa@platform-sandbox-344814.iam.gserviceaccount.com"
+  # }
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+configmap:
+  enabled: true
+  # defaults to .Values.name if name is not provided
+  name: core-service-order-configmap
+  data: 
+    EVENTSTORE_URI: "esdb://event-store-cluster.event-store-order.svc.core.dev:2113?tls=false"
+    NODE_ENV: development
+    WORKFLOW_HOST: core-workflow-gateway.workflow-gateway.svc.core.dev
+    WORKFLOW_HOSTNAME: core-workflow-gateway
+    WORKFLOW_MAX_ATTEMPTS: "\"5\"" # double quote integer
+    WORKFLOW_TLS_CA: /app/cert/workflow/ca.crt
+    WORKFLOW_TLS_CERT: /app/cert/workflow/tls.crt
+    WORKFLOW_TLS_KEY: /app/cert/workflow/tls.key
+
+secret:
+  enabled: true
+  name: order-config # name of k8s Secret to be created
+  clusterSecretStoreRef: gsm # cluster-wide SecretStore
+  gsmName: core-service-order-dev # GCPSM secret name

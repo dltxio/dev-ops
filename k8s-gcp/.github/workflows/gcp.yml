@@ -1,0 +1,154 @@
+name: "Build & Deploy"
+
+on:
+  push:
+    branches:
+    - master
+
+env:
+  # GCP config
+  GCP_PROJECT_ID: <GCP_PROJECT_ID>
+  GCP_ARTIFACT_PROJECT_ID: <GCP_ARTIFACT_PROJECT_ID>
+  GCP_PROJECT_NUMBER: <GCP_PROJECT_NUMBER>
+  GCP_SA_NAME: <GCP_SA_NAME>
+  GCP_WIF_POOL: <GCP_WIF_POOL>
+  # GKE config
+  GKE_CLUSTER: <GKE_CLUSTER>
+  GKE_LOCATION: australia-southeast1
+  GKE_NAMESPACE: <GKE_NAMESPACE>
+  # App/Helm config
+  APP_NAME: project-name
+  IMAGE: project-name
+  HELM_VERSION: v3.9.0
+  HELM_CHART_VERSION: 0.3.0
+  # Artifact config
+  ARTIFACT_HOST: australia-southeast1-docker.pkg.dev
+  ARTIFACT_REPOSITORY: docker-reg-au-se1-dev
+
+jobs:
+  # build stage
+  build:
+    runs-on: ubuntu-latest
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - name: Set environment variables
+      run: |-
+        echo "IMAGE_URL=${{ env.ARTIFACT_HOST }}/${{ env.GCP_ARTIFACT_PROJECT_ID }}/${{ env.ARTIFACT_REPOSITORY }}/${{ env.IMAGE }}" >> $GITHUB_ENV
+        echo "GCP_SA_EMAIL="${{ env.GCP_SA_NAME }}@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com >> $GITHUB_ENV
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Authenticate to GCP through workload identity pool
+      id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      if: ${{ !env.ACT }}
+      with:
+        workload_identity_provider: projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.GCP_WIF_POOL }}/providers/gh-provider
+        service_account: ${{ env.GCP_SA_EMAIL }}
+
+    # Setup gcloud CLI
+    - name: Install gcloud CLI
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        project_id: ${{ env.GCP_PROJECT_ID }}
+
+    # Configure Docker to use the gcloud command-line tool as a credential helper for authentication
+    # Add hostname for artifact registry
+    - name: Configure docker auth
+      run: gcloud --quiet auth configure-docker ${{ env.ARTIFACT_HOST }}
+
+    # Build the Docker image
+    - name: Build
+      run: |-
+        docker build \
+          --tag "${{ env.IMAGE_URL }}:${{ github.sha }}" \
+          --tag "${{ env.IMAGE_URL }}:latest" \
+          .
+    
+    # Push the Docker image to Google Artifact Registry
+    - name: Publish
+      run: docker push ${{ env.IMAGE_URL }} --all-tags
+    
+    - name: Install helm
+      uses: azure/setup-helm@v1
+      with:
+        version: ${{ env.HELM_VERSION }}
+
+    - name: Pull helm chart
+      run: |-
+        helm pull oci://${{ env.ARTIFACT_HOST }}/${{ env.GCP_ARTIFACT_PROJECT_ID }}/${{ env.ARTIFACT_REPOSITORY }}/project-name-helm \
+        --version ${{ env.HELM_CHART_VERSION }} \
+        --untar
+        
+    - name: Generate manifest file
+      run: |-
+        helm template -f k8s-gcp/deployment.yml \
+        --set container.image.repository=${{ env.IMAGE_URL }} \
+        --set container.image.tag=${{ github.sha }} \
+        --set namespace=${{ env.GKE_NAMESPACE }} \
+        project-name-helm/ > k8s-gcp/manifest.yml
+    
+    # Get the GKE credentials so we can deploy to the cluster
+    - name: Set up GKE credentials
+      uses: google-github-actions/get-gke-credentials@v0
+      if: ${{ !env.ACT }}
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_LOCATION }}
+
+    - name: Dry run deployment
+      run: kubectl diff -f k8s-gcp/manifest.yml | GREP_COLOR='01;32' egrep --color=always '^\+.*|$' | GREP_COLOR='01;31' egrep --color=always '^\-.*|$'
+
+    - name: Pass manifest file to deploy step
+      uses: actions/upload-artifact@v3
+      with:
+        name: manifest
+        path: k8s-gcp/manifest.yml
+  
+  # deploy stage
+  deploy:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      issues: 'write'
+      id-token: 'write'
+
+    steps:
+    - name: Set environment variables
+      run: echo "GCP_SA_EMAIL="${{ env.GCP_SA_NAME }}@${{ env.GCP_PROJECT_ID }}.iam.gserviceaccount.com >> $GITHUB_ENV
+
+    - name: Fetch manifest
+      uses: actions/download-artifact@v3
+      with:
+        name: manifest
+        path: k8s/deploy
+
+    - name: Authenticate to GCP through workload identity pool
+      id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      if: ${{ !env.ACT }}
+      with:
+        workload_identity_provider: 'projects/${{ env.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/${{ env.GCP_WIF_POOL }}/providers/gh-provider'
+        service_account: ${{ env.GCP_SA_EMAIL }}
+
+    - name: Set up GKE credentials
+      uses: google-github-actions/get-gke-credentials@v0
+      if: ${{ !env.ACT }}
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_LOCATION }}
+
+    - name: Deploy to kubernetes
+      run: |-
+        kubectl apply -f k8s-gcp/manifest.yml
+        kubectl rollout status deployment/${{ env.APP_NAME }} -n ${{ env.GKE_NAMESPACE }}

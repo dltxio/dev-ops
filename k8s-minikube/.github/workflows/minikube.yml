@@ -33,7 +33,7 @@ jobs:
 
     - name: Deploy to minikube
       run: |
-        kubectl apply -f deployment.yaml
+        kubectl apply -f deployment.yml
         kubectl wait --for=condition=ready pod -l app=project-name --timeout=120s
         kubectl logs -l app=project-name
         

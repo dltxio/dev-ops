@@ -35,28 +35,14 @@ container:
   envFrom:
     enabled: true
     config:
-      - name: core-service-order-configmap
+      - name: project-name-configmap
         type: configmap
-      - name: order-config
+      - name: project-name-config
         type: secret
   volumeMount:
     enabled: false
-    config:
-      - volumeName: core-workflow-gateway-client-tls
-        path: /app/cert/workflow/ca.crt
-        subPath: ca.crt
-      - volumeName: core-workflow-gateway-client-tls
-        path: /app/cert/workflow/tls.crt
-        subPath: tls.crt
-      - volumeName: core-workflow-gateway-client-tls
-        path: /app/cert/workflow/tls.key
-        subPath: tls.key
   volume:
     enabled: false
-    config:
-      - name: core-workflow-gateway-client-tls
-        type: secret
-        defaultMode: 420
   livenessProbe:
     enabled: false
   readinessProbe:
@@ -69,34 +55,23 @@ service:
 
 serviceAccount:
   create: create
-  name: "core-service-order-sa"
-  # annotations: {
-    # iam.gke.io/gcp-service-account: "core-service-order-sa@platform-sandbox-344814.iam.gserviceaccount.com"
-  # }
+  name: "project-name-sa"
 
 autoscaling:
   enabled: false
   minReplicas: 1
   maxReplicas: 5
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
 configmap:
   enabled: true
   # defaults to .Values.name if name is not provided
-  name: core-service-order-configmap
+  name: project-name-configmap
   data: 
-    EVENTSTORE_URI: "esdb://event-store-cluster.event-store-order.svc.core.dev:2113?tls=false"
     NODE_ENV: development
-    WORKFLOW_HOST: core-workflow-gateway.workflow-gateway.svc.core.dev
-    WORKFLOW_HOSTNAME: core-workflow-gateway
-    WORKFLOW_MAX_ATTEMPTS: "\"5\"" # double quote integer
-    WORKFLOW_TLS_CA: /app/cert/workflow/ca.crt
-    WORKFLOW_TLS_CERT: /app/cert/workflow/tls.crt
-    WORKFLOW_TLS_KEY: /app/cert/workflow/tls.key
 
 secret:
   enabled: true
-  name: order-config # name of k8s Secret to be created
+  name: project-name-config # name of k8s Secret to be created
   clusterSecretStoreRef: gsm # cluster-wide SecretStore
-  gsmName: core-service-order-dev # GCPSM secret name
+  gsmName: project-name-dev # GCPSM secret name
